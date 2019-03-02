@@ -34,23 +34,31 @@ type
   TSongTextEditor = class(TRichEdit)
   private
     RegEx: TRegExpr;
-    MarkedTextItems: TList<TTextItem>;
+//    MarkedTextItems: TList<TTextItem>;
 
     FSelAttributes: TMyTextAttributes;
     FDefAttributes: TMyTextAttributes;
 
     procedure SetDefAttributes(Value: TMyTextAttributes);
     procedure SetSelAttributes(Value: TMyTextAttributes);
+
+    procedure PasteMessage(var Message: TMessage); message WH_CALLWNDPROC;
+
   protected
     procedure Change; override;
+    procedure KeyUp(var Key: Word; Shift: TShiftState); override;
 
   public
 
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
+    procedure WNDProc(var Message: TMessage); override;
+
     property DefAttributes: TMyTextAttributes read FDefAttributes write SetDefAttributes;
     property SelAttributes: TMyTextAttributes read FSelAttributes write SetSelAttributes;
+
+    procedure HighlightText(BeginPosition, EndPosition: Integer);
   published
 
   end;
@@ -117,10 +125,9 @@ end;
 
 //-----------------------------------------------------------------------------
 constructor TSongTextEditor.Create(AOwner: TComponent);
-var
-  DC: HDC;
 begin
   inherited Create(AOwner);
+  Parent := AOwner as TWinControl;
 
   FSelAttributes := TMyTextAttributes.Create(Self, atSelected);
   FDefAttributes := TMyTextAttributes.Create(Self, atDefaultText);
@@ -131,7 +138,7 @@ begin
   RegEx.ModifierG := True;
   RegEx.Expression := '^(\[\d+:\d+:\d+\])';
 
-  MarkedTextItems := TList<TTextItem>.Create;
+//  MarkedTextItems := TList<TTextItem>.Create;
 end;
 
 destructor TSongTextEditor.Destroy;
@@ -139,6 +146,26 @@ begin
   RegEx.Free;
 
   inherited Destroy;
+end;
+
+procedure TSongTextEditor.WNDProc(var Message: TMessage);
+var
+  a: Integer;
+begin
+  if (Message.Msg = WM_PASTE) or (Message.Msg = WM_COPY) then
+    a := 1;
+
+  inherited;
+end;
+
+procedure TSongTextEditor.PasteMessage(var Message: TMessage);
+var
+  a: Integer;
+begin
+  if Message.Msg = WM_PASTE then
+    a := 1;
+
+  inherited;
 end;
 
 procedure TSongTextEditor.SetDefAttributes(Value: TMyTextAttributes);
@@ -151,10 +178,9 @@ begin
   SelAttributes.Assign(Value);
 end;
 
-procedure TSongTextEditor.Change;
+procedure TSongTextEditor.HighlightText(BeginPosition, EndPosition: Integer);
 var CurPos, i : Integer;
     ValText: String;
-    FullRepaintNeeded: Boolean;
     PreviusD, NextD: Integer;
     TextLen: Integer;
     TextItem: TTextItem;
@@ -162,10 +188,51 @@ var CurPos, i : Integer;
     Find: TFindText;
     GetTextLengthEx: TGetTextLengthEx;
 
-    TemplateBegin, TemplateLength, TemplateEnd: Integer;
-    TemplateIsMarked, TemplateChanged: Boolean;
-    TemplateIndex: Integer;
+begin
 
+  // Приводим текст к Линукс формату (RegEx только в этом случае работает корректно)
+  ValText := Text;
+  ValText := ValText.Replace(#$D#$A, #$D, [rfReplaceAll]);
+  ValText := Copy(ValText, BeginPosition, EndPosition - BeginPosition + 1);
+
+  // Поиск вхождений шаблона с начала текущего абзаца
+  RegEx.InputString := ValText;
+
+
+  // Снимаем выделение с остальной части текста абзаца
+  SelStart := EndPosition - 1; //+ SelLength;
+  SelLength := EndPosition - EndPosition;
+  SelAttributes.BGColor := clWhite;
+
+  // Ищем шаблоны в тексте
+  if RegEx.Exec() then
+  repeat
+
+    // Выделение шаблона
+    SelStart := EndPosition + RegEx.MatchPos[1] - 2;
+    SelLength := RegEx.MatchLen[1];
+    SelAttributes.BGColor := RGB(142, 243, 255);
+
+  until not RegEx.ExecNext;
+
+
+  GetTextLengthEx.flags := GTL_DEFAULT;
+  GetTextLengthEx.codepage := 1200;
+  TextLen := SendMessage(Handle, EM_GETTEXTLENGTHEX, WPARAM(@GetTextLengthEx), 0);
+
+end;
+
+procedure TSongTextEditor.Change;
+var CurPos, i : Integer;
+    ValText: String;
+    PreviusD, NextD: Integer;
+    TextLen: Integer;
+    TextItem: TTextItem;
+
+    Find: TFindText;
+    GetTextLengthEx: TGetTextLengthEx;
+
+    ParagraphBegin, ParagraphEnd: Integer;
 
 begin
   inherited Change;
@@ -185,75 +252,37 @@ begin
 
   // Коррекция начала текущего выделения
   if PreviusD = -1 then
-    SelStart := 1
+    ParagraphBegin := 1
   else
-    SelStart := PreviusD + 1;
+    ParagraphBegin := PreviusD + 1;
+
+  // Позиция окончания параграфа
+  ParagraphEnd := NextD;
+
+//  HighlightText(ParagraphBegin, ParagraphEnd);
 
   // Приводим текст к Линукс формату (RegEx только в этом случае работает корректно)
   ValText := Text;
   ValText := ValText.Replace(#$D#$A, #$D, [rfReplaceAll]);
-  ValText := Copy(ValText, SelStart, NextD - SelStart + 1);
+  ValText := Copy(ValText, ParagraphBegin, ParagraphEnd - ParagraphBegin + 1);
 
   // Поиск вхождений шаблона с начала текущего абзаца
   RegEx.InputString := ValText;
 
 
-  // Проверяем место вставки символа, если в выделенное поле, то
-  // обновляем выделение абзаца
-//  TemplateChanged := false;
-//
-//  for i := 0 to MarkedTextItems.Count - 1 do
-//    if (MarkedTextItems[i].First >= CurPos) and (CurPos <= MarkedTextItems[i].Last) then
-//    begin
-//      TemplateChanged := True;
-//      MarkedTextItems.Delete(i);
-//
-//      // Снимаем выделение с текущего абзаца целиком
-//      SelStart := PreviusD;
-//      SelLength := NextD - PreviusD;
-//      SelAttributes.BGColor := clWhite;
-//    end;
-
-
   // Снимаем выделение с остальной части текста абзаца
-  SelStart := SelStart; //+ SelLength;
-  SelLength := NextD - SelStart;
+  SelStart := ParagraphBegin - 1; //+ SelLength;
+  SelLength := ParagraphEnd - ParagraphBegin;
   SelAttributes.BGColor := clWhite;
 
   // Ищем шаблоны в тексте
   if RegEx.Exec() then
   repeat
-//    TemplateBegin := RegEx.MatchPos[1];
-//    TemplateLength := RegEx.MatchLen[1];
-//    TemplateEnd := TemplateBegin + TemplateLength - 1;
 
-//    TemplateIsMarked := false;
-
-    // Проверяем место вставки символа, если в выделенное поле, то
-    // обновляем выделение абзаца
-//    for i := 0 to MarkedTextItems.Count - 1 do
-//      if (MarkedTextItems[i].First = TemplateBegin) and (MarkedTextItems[i].Last = TemplateEnd) then
-//      begin
-//        TemplateIsMarked := True;
-//        TemplateIndex := i;
-//      end;
-
-//    if TemplateChanged or not(TemplateIsMarked) then
-//    begin
-
-
-      // Выделение шаблона
-      SelStart := SelStart + RegEx.MatchPos[1] - 2;
-      SelLength := RegEx.MatchLen[1];
-      SelAttributes.BGColor := clGreen;
-
-      // Помещаем данные об элементе выделения в список
-//      TextItem.First := PreviusD + SelStart;
-//      TextItem.Last := PreviusD + SelStart + SelLength - 1;
-//      MarkedTextItems.Add(TextItem);
-
-
-//    end;
+    // Выделение шаблона
+    SelStart := ParagraphBegin + RegEx.MatchPos[1] - 2;
+    SelLength := RegEx.MatchLen[1];
+    SelAttributes.BGColor := RGB(142, 243, 255);
 
   until not RegEx.ExecNext;
 
@@ -262,12 +291,78 @@ begin
   GetTextLengthEx.codepage := 1200;
   TextLen := SendMessage(Handle, EM_GETTEXTLENGTHEX, WPARAM(@GetTextLengthEx), 0);
 
-//  SelLength := TextLen - SelStart;
-
   SelStart := CurPos;
   SelLength := 0;
   SelAttributes.BGColor := clWhite;
 
+end;
+
+procedure TSongTextEditor.KeyUp(var Key: Word; Shift: TShiftState);
+var CurPos, i : Integer;
+    ValText: String;
+    PreviusD, NextD: Integer;
+//    TextLen: Integer;
+    TextItem: TTextItem;
+
+    Find: TFindText;
+    GetTextLengthEx: TGetTextLengthEx;
+
+    ParagraphBegin, ParagraphEnd: Integer;
+  StartPos: Integer;
+
+begin
+  inherited KeyUp(Key, Shift);
+
+  if (ssCtrl in Shift) and (key=86) then
+  begin
+
+      CurPos := SelStart;
+
+    //  HighlightText(ParagraphBegin, ParagraphEnd);
+
+      // Приводим текст к Линукс формату (RegEx только в этом случае работает корректно)
+      ValText := Text;
+      ValText := ValText.Replace(#$D#$A, #$D, [rfReplaceAll]);
+
+      ParagraphBegin := 1;
+      ParagraphEnd := ValText.Length;
+
+      ValText := Copy(ValText, ParagraphBegin, ParagraphEnd - ParagraphBegin + 1);
+
+      // Снимаем выделение с остальной части текста абзаца
+      SelStart := ParagraphBegin - 1; //+ SelLength;
+      SelLength := ParagraphEnd - ParagraphBegin;
+      SelAttributes.BGColor := clWhite;
+
+      // Поиск вхождений шаблона с начала текущего абзаца
+      RegEx.InputString := ValText;
+
+      StartPos := 1;
+      // Ищем шаблоны в тексте
+      while RegEx.ExecPos(StartPos) do
+      begin
+
+        // Выделение шаблона
+        SelStart := ParagraphBegin + RegEx.MatchPos[1] - 2;
+        SelLength := RegEx.MatchLen[1];
+
+        StartPos := SelStart + SelLength;
+
+        SelAttributes.BGColor := RGB(142, 243, 255);
+        RegEx.InputString := ValText;
+
+      end;
+
+
+      GetTextLengthEx.flags := GTL_DEFAULT;
+      GetTextLengthEx.codepage := 1200;
+      TextLen := SendMessage(Handle, EM_GETTEXTLENGTHEX, WPARAM(@GetTextLengthEx), 0);
+
+      SelStart := CurPos;
+      SelLength := 0;
+      SelAttributes.BGColor := clWhite;
+
+  end;
 end;
 
 //-----------------------------------------------------------------------------

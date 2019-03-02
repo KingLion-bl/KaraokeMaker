@@ -1,40 +1,40 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
 	<Transactions>
-    <Transaction>1899.12.30 00:00:00.000.863,C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\WaveScrollBar.pas=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\Unit2.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.414,C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\SongTextEditor.pas=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\TextEditor.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.196,=C:\Users\KingLion\Desktop\Огибающая\MyType.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.002,C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\CreateLiryx.dproj=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\CreateLirycs.dproj</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.077,=C:\Users\KingLion\Desktop\Огибающая\ComponentsPackage\WaveScreen.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.763,C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Package1.dproj=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\CreateLiryx.dproj</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.104,=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\MyType.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.157,=vcl.dcp</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.004,C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\RegExpr.pas=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\Unit2.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.679,=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\Unit2.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.510,=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\Unit2.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.473,=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\Unit2.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.145,=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\Unit2.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.715,=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\MyType.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.863,C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\Unit2.pas=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\WaveScrollBar.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.004,C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\Unit2.pas=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\RegExpr.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.473,=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\Unit2.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.157,=vcl.dcp</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.763,C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\CreateLiryx.dproj=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Package1.dproj</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.196,=C:\Users\KingLion\Desktop\Огибающая\MyType.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.007,=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\MyType.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.145,=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\Unit2.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.278,C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\Unit2.pas=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\MyFunctions.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.340,C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\Unit2.pas=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\PaintWave.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.826,C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\Unit2.pas=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\TextEditor.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.303,C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\Unit2.pas=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\WavData.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.433,=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\Unit2.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.904,=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\Unit2.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.679,=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\Unit2.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.510,=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\Unit2.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.485,C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\TextEditor.pas=</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.548,C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\TextEditor.pas=</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.278,C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\MyFunctions.pas=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\Unit2.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.411,C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\MyFunctions.pas=</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.340,C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\PaintWave.pas=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\Unit2.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.826,C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\TextEditor.pas=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\Unit2.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.426,=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\MyWav.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.382,C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\MyWav.pas=</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.414,C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\TextEditor.pas=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\SongTextEditor.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.548,C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\TextEditor.pas=</Transaction>
     <Transaction>1899.12.30 00:00:00.000.647,=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\TextEditor.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.989,=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\TextEditor.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.426,=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\MyWav.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.303,C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\WavData.pas=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\Unit2.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.494,C:\Users\KingLion\Documents\Embarcadero\Studio\Components\LirycsCreator\CreateLirycs.dproj=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\CreateLirycs.dproj</Transaction>
     <Transaction>1899.12.30 00:00:00.000.473,=rtl.dcp</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.976,=C:\Users\KingLion\Documents\Embarcadero\Studio\Components\LirycsCreator\WaveScreen.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.494,C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\CreateLirycs.dproj=C:\Users\KingLion\Documents\Embarcadero\Studio\Components\LirycsCreator\CreateLirycs.dproj</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.382,C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\MyWav.pas=</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.002,C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\CreateLirycs.dproj=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\CreateLiryx.dproj</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.077,=C:\Users\KingLion\Desktop\Огибающая\ComponentsPackage\WaveScreen.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.104,=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\MyType.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.488,=vclx.dcp</Transaction>
     <Transaction>1899.12.30 00:00:00.000.155,=C:\Users\KingLion\Documents\Embarcadero\Studio\Components\LirycsCreator\Unit2.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.083,C:\Users\KingLion\Documents\Embarcadero\Studio\Components\LirycsCreator\Additional.pas=C:\Users\KingLion\Documents\Embarcadero\Studio\Components\LirycsCreator\Unit2.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.083,C:\Users\KingLion\Documents\Embarcadero\Studio\Components\LirycsCreator\Unit2.pas=C:\Users\KingLion\Documents\Embarcadero\Studio\Components\LirycsCreator\Additional.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.976,=C:\Users\KingLion\Documents\Embarcadero\Studio\Components\LirycsCreator\WaveScreen.pas</Transaction>
   </Transactions>
 	<ProjectSortOrder AutoSort="0" SortType="0">
     <File Path="MyType.pas"/>

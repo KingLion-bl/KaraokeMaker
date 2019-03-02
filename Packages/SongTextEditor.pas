@@ -240,7 +240,7 @@ begin
   CurPos:= SelStart;
 
   Find.lpstrText := #$D;
-  Find.chrg.cpMin := CurPos;
+  Find.chrg.cpMin := CurPos - 1;
 
   // Получаем начало текущего абзаца
   Find.chrg.cpMax := 0;
@@ -301,7 +301,7 @@ procedure TSongTextEditor.KeyUp(var Key: Word; Shift: TShiftState);
 var CurPos, i : Integer;
     ValText: String;
     PreviusD, NextD: Integer;
-    TextLen: Integer;
+//    TextLen: Integer;
     TextItem: TTextItem;
 
     Find: TFindText;
@@ -318,14 +318,15 @@ begin
 
       CurPos := SelStart;
 
-      ParagraphBegin := 1;
-      ParagraphEnd := TextLen;
-
     //  HighlightText(ParagraphBegin, ParagraphEnd);
 
       // Приводим текст к Линукс формату (RegEx только в этом случае работает корректно)
       ValText := Text;
       ValText := ValText.Replace(#$D#$A, #$D, [rfReplaceAll]);
+
+      ParagraphBegin := 1;
+      ParagraphEnd := ValText.Length;
+
       ValText := Copy(ValText, ParagraphBegin, ParagraphEnd - ParagraphBegin + 1);
 
       // Снимаем выделение с остальной части текста абзаца
@@ -355,7 +356,7 @@ begin
 
       GetTextLengthEx.flags := GTL_DEFAULT;
       GetTextLengthEx.codepage := 1200;
-      TextLen := SendMessage(Handle, EM_GETTEXTLENGTHEX, WPARAM(@GetTextLengthEx), 0);
+//      TextLen := SendMessage(Handle, EM_GETTEXTLENGTHEX, WPARAM(@GetTextLengthEx), 0);
 
       SelStart := CurPos;
       SelLength := 0;

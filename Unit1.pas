@@ -36,8 +36,8 @@ type
 
   private
     { Private declarations }
-    OldWindowProc: TWndMethod;
-    procedure NewEditWindowProc(var Message: TMessage);
+//    OldWindowProc: TWndMethod;
+//    procedure NewEditWindowProc(var Message: TMessage);
 
   public
 
@@ -124,27 +124,29 @@ begin
  // SongTextEditor.SelAttributes.BGColor := clRed;
 end;
 
-procedure TMainForm.NewEditWindowProc(var Message: TMessage);
-begin
-
-  // перехватываем сообщение о вставке
-  if Message.Msg = WM_PASTE then
-    SongTextEditor.Text := 'Вставка!!!'
-  else
-    OldWindowProc(Message);
-
-end;
+//procedure TMainForm.NewEditWindowProc(var Message: TMessage);
+//begin
+//
+//  // перехватываем сообщение о вставке
+//  if Message.Msg = WM_PASTE then
+//    SongTextEditor.Text := 'Вставка!!!'
+//  else
+//    OldWindowProc(Message);
+//
+//end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 var FileName: string;
 begin
-  // Запоминаем старую оконную процедуру
-  OldWindowProc := SongTextEditor.WindowProc;
-  // Заменяем ее новой
-  SongTextEditor.WindowProc := NewEditWindowProc;
+
+//  // Запоминаем старую оконную процедуру
+//  OldWindowProc := SongTextEditor.WindowProc;
+//  // Заменяем ее новой
+//  SongTextEditor.WindowProc := NewEditWindowProc;
 
 
   FileName:= 'wave-16.wav';
+  MediaPlayer.FileName := ExtractFilePath(ParamStr(0)) + FileName;
 
   WaveScreen.OpenMedia(MediaPlayer.FileName);
   WaveScreen.CursorPositionAsSamples := 0;
