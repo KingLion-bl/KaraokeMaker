@@ -141,8 +141,14 @@
         <DCCReference Include="Unit1.pas">
             <Form>MainForm</Form>
         </DCCReference>
-        <DCCReference Include="MyType.pas"/>
-        <DCCReference Include="MyWav.pas"/>
+        <DCCReference Include="Packages\MyType.pas"/>
+        <DCCReference Include="Packages\MyWav.pas"/>
+        <DCCReference Include="Packages\SongTextEditor.pas"/>
+        <DCCReference Include="Packages\RegExpr.pas"/>
+        <DCCReference Include="Packages\WaveScreen.pas"/>
+        <DCCReference Include="Packages\WaveScrollBar.pas"/>
+        <DCCReference Include="Packages\PaintWave.pas"/>
+        <DCCReference Include="Packages\WavData.pas"/>
         <BuildConfiguration Include="Debug">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

@@ -27,35 +27,6 @@ object MainForm: TMainForm
     ExplicitTop = 0
     ExplicitWidth = 423
   end
-  object Panel2: TPanel
-    Left = 0
-    Top = 429
-    Width = 852
-    Height = 238
-    Align = alClient
-    Caption = 'Panel2'
-    TabOrder = 0
-    ExplicitHeight = 348
-    object SongTextEditor: TSongTextEditor
-      Left = 1
-      Top = 1
-      Width = 850
-      Height = 236
-      Align = alClient
-      Font.Charset = RUSSIAN_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -19
-      Font.Name = 'MS Sans Serif'
-      Font.Style = []
-      HideScrollBars = False
-      Lines.Strings = (
-        'SongTextEditor')
-      ParentFont = False
-      ScrollBars = ssBoth
-      TabOrder = 0
-      Zoom = 100
-    end
-  end
   object Panel3: TPanel
     Left = 0
     Top = 0
@@ -63,7 +34,7 @@ object MainForm: TMainForm
     Height = 424
     Align = alTop
     Caption = 'Panel2'
-    TabOrder = 1
+    TabOrder = 0
     object Panel1: TPanel
       Left = 1
       Top = 350
@@ -141,12 +112,36 @@ object MainForm: TMainForm
       ScrollBar.Width = 846
       ScrollBar.Height = 23
       ScrollBar.Align = alClient
-      ScrollBar.LargeChange = 500
       ScrollBar.PageSize = 1
-      ScrollBar.SmallChange = 100
       ScrollBar.TabOrder = 0
       AutoScroll = False
     end
+  end
+  object Panel2: TPanel
+    Left = 0
+    Top = 429
+    Width = 852
+    Height = 238
+    Align = alClient
+    Caption = 'Panel2'
+    TabOrder = 1
+  end
+  object SongTextEditor: TSongTextEditor
+    Left = 0
+    Top = 429
+    Width = 852
+    Height = 238
+    Align = alClient
+    Font.Charset = RUSSIAN_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -19
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    Lines.Strings = (
+      'SongTextEditor')
+    ParentFont = False
+    TabOrder = 2
+    Zoom = 100
   end
   object Timer: TTimer
     Enabled = False

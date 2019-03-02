@@ -2,12 +2,20 @@
 <BorlandProject>
 	<BT_BuildType>Debug</BT_BuildType>
 	<Transactions>
+    <Transaction>1899.12.30 00:00:00.000.649,C:\Users\KingLion\Desktop\Огибающая\LirycsCreator.dproj=C:\Users\KingLion\Desktop\Огибающая\Project1.dproj</Transaction>
     <Transaction>1899.12.30 00:00:00.000.248,C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\SongTextEditor.pas=</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.649,C:\Users\KingLion\Desktop\Огибающая\Project1.dproj=C:\Users\KingLion\Desktop\Огибающая\LirycsCreator.dproj</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.461,=C:\Users\KingLion\Documents\Embarcadero\Studio\Components\LirycsCreator\Additional.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.412,C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\SongTextEditor.pas=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\TextEditor.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.427,=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\TextEditor.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.996,=C:\Users\KingLion\Documents\Embarcadero\Studio\Components\dscintilla-master\Sources\DScintilla.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.108,C:\Users\KingLion\Documents\Embarcadero\Studio\Components\dscintilla-master\Sources\DScintilla.pas=</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.461,=C:\Users\KingLion\Documents\Embarcadero\Studio\Components\LirycsCreator\Additional.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.427,=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\TextEditor.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.412,C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\TextEditor.pas=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\SongTextEditor.pas</Transaction>
+    <Transaction>2019.03.02 22:55:58.177,=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\KaraokeMaker\Packages\MyType.pas</Transaction>
+    <Transaction>2019.03.02 22:55:58.185,=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\KaraokeMaker\Packages\MyWav.pas</Transaction>
+    <Transaction>2019.03.02 22:57:53.668,=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\KaraokeMaker\Packages\SongTextEditor.pas</Transaction>
+    <Transaction>2019.03.02 22:58:13.970,=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\KaraokeMaker\Packages\RegExpr.pas</Transaction>
+    <Transaction>2019.03.02 22:58:30.067,=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\KaraokeMaker\Packages\WaveScreen.pas</Transaction>
+    <Transaction>2019.03.02 22:58:42.519,=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\KaraokeMaker\Packages\WaveScrollBar.pas</Transaction>
+    <Transaction>2019.03.02 22:59:30.461,=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\KaraokeMaker\Packages\PaintWave.pas</Transaction>
+    <Transaction>2019.03.02 22:59:47.216,=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\KaraokeMaker\Packages\WavData.pas</Transaction>
   </Transactions>
 </BorlandProject>

@@ -54,8 +54,8 @@ object MainForm: TMainForm
         VisibleButtons = [btPlay, btPause, btStop]
         DoubleBuffered = True
         FileName = 
-          'C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\' +
-          'wave-16.wav'
+          'C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\KaraokeM' +
+          'aker\wave-16.wav'
         ParentDoubleBuffered = False
         TabOrder = 0
         OnClick = MediaPlayerClick
