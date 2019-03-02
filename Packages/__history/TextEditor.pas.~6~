@@ -1,0 +1,117 @@
+unit TextEditor;
+
+interface
+
+uses
+  System.SysUtils, System.Classes, Vcl.Controls, Vcl.StdCtrls, Vcl.ComCtrls,
+  WinApi.Messages, System.Types, WinApi.Windows, RichEdit, Graphics;
+
+type
+  //---------------------------------------------------------------------
+  TMyTextAttributes = class(TTextAttributes)
+  private
+    RichEdit: TCustomRichEdit;
+    FType: TAttributeType;
+
+    procedure GetAttributes(var Format: TCharFormat2);
+    function GetBGColor: TColor;
+
+    procedure SetAttributes(var Format: TCharFormat2);
+    procedure SetBGColor(Value: TColor);
+
+  public
+    property BGColor: TColor read GetBGColor write SetBGColor;
+
+  end;
+
+  //---------------------------------------------------------------------
+  TTextEditor = class(TRichEdit)
+  private
+    FSelAttributes: TMyTextAttributes;
+    FDefAttributes: TMyTextAttributes;
+
+    procedure SetDefAttributes(Value: TMyTextAttributes);
+    procedure SetSelAttributes(Value: TMyTextAttributes);
+  protected
+    { Protected declarations }
+  public
+    { Public declarations }
+    constructor Create(AOwner: TComponent); override;
+
+    property DefAttributes: TMyTextAttributes read FDefAttributes write SetDefAttributes;
+    property SelAttributes: TMyTextAttributes read FSelAttributes write SetSelAttributes;
+  published
+    { Published declarations }
+  end;
+
+procedure Register;
+
+implementation
+
+procedure TMyTextAttributes.GetAttributes(var Format: TCharFormat2);
+begin
+  InitFormat(Format);
+  if RichEdit.HandleAllocated then
+    SendGetStructMessage(RichEdit.Handle, EM_GETCHARFORMAT,
+      WPARAM(FType = atSelected), Format, True);
+end;
+
+function TMyTextAttributes.GetBGColor: TColor;
+var
+  Format: TCharFormat2;
+begin
+  GetAttributes(Format);
+  with Format do
+    if (dwEffects and CFE_AUTOCOLOR) <> 0 then
+      Result := clWindow else
+      Result := crBackColor;
+end;
+
+procedure TMyTextAttributes.SetAttributes(var Format: TCharFormat2);
+var
+  Flag: Longint;
+begin
+  if FType = atSelected then Flag := SCF_SELECTION
+  else Flag := 0;
+  if RichEdit.HandleAllocated then
+    SendStructMessage(RichEdit.Handle, EM_SETCHARFORMAT, Flag, Format);
+end;
+
+procedure TMyTextAttributes.SetBGColor(Value: TColor);
+var
+  Format: TCharFormat2;
+begin
+  InitFormat(Format);
+  with Format do
+  begin
+    dwMask := CFM_BACKCOLOR;
+    if Value = clWindow then
+      dwEffects := CFE_AUTOCOLOR else
+      crBackColor := ColorToRGB(Value);
+  end;
+  SetAttributes(Format);
+end;
+
+
+constructor TTextEditor.Create(AOwner: TComponent);
+begin
+  inherited;
+
+end;
+
+procedure TTextEditor.SetDefAttributes(Value: TMyTextAttributes);
+begin
+  DefAttributes.Assign(Value);
+end;
+
+procedure TTextEditor.SetSelAttributes(Value: TMyTextAttributes);
+begin
+  SelAttributes.Assign(Value);
+end;
+
+procedure Register;
+begin
+  RegisterComponents('WaveScreen', [TTextEditor]);
+end;
+
+end.

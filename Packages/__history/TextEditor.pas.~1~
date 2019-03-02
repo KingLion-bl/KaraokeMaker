@@ -1,0 +1,29 @@
+unit TextEditor;
+
+interface
+
+uses
+  System.SysUtils, System.Classes, Vcl.Controls, Vcl.StdCtrls, Vcl.ComCtrls;
+
+type
+  TTextEditor = class(TCustomRichEdit)
+  private
+    { Private declarations }
+  protected
+    { Protected declarations }
+  public
+    { Public declarations }
+  published
+    { Published declarations }
+  end;
+
+procedure Register;
+
+implementation
+
+procedure Register;
+begin
+  RegisterComponents('WaveScreen', [TTextEditor]);
+end;
+
+end.

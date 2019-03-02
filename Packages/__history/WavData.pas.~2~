@@ -1,0 +1,33 @@
+unit WavData;
+
+interface
+
+uses MyTypes;
+
+type
+
+  TWavData = class
+  private
+    FFileName: String;
+    FHead: TSimpleWavHead;
+    FData: TArrayInt;
+    FCanals: TArrayArrayReal;
+    FSamplesCount: Integer;
+    FFileOpened: boolean;
+
+  public
+    constructor Create;
+    destructor Destroy;
+
+    property Head: TSimpleWavHead read FHead;
+    property Data: TArrayInt read FData;
+    property SamplesCount: Integer read FSamplesCount;
+
+    property FileOpened: boolean read FFileOpened;
+
+    procedure OpenFile(AFileName: String);
+  end;
+
+implementation
+
+end.

@@ -1,0 +1,96 @@
+unit WaveScrollBar;
+
+interface
+
+uses
+  Vcl.StdCtrls, System.Classes;
+
+type
+
+  TWSScrollBar = class(TScrollBar)
+  private
+    FPosition: Integer;
+
+    procedure SetPosition(Value: Integer);
+
+    procedure SetPageSize(Value: Integer);
+    function GetPageSize: Integer;
+
+  protected
+    procedure Scroll(ScrollCode: TScrollCode; var ScrollPos: Integer); override;
+
+  public
+    constructor Create(AOwner: TComponent); override;
+
+  published
+    property Position: Integer read FPosition write SetPosition default 0;
+    property PageSize: Integer read GetPageSize write SetPageSize;
+
+  end;
+
+implementation
+
+uses
+  WaveScreen;
+
+constructor TWSScrollBar.Create(AOwner: TComponent);
+begin
+  inherited;
+  PageSize := 1;
+
+  SetSubComponent(True);
+end;
+
+procedure TWSScrollBar.Scroll(ScrollCode: TScrollCode; var ScrollPos: Integer);
+var EndPos: Integer;
+    Deviation: Integer;
+    RealPos: Extended;
+begin
+  inherited;
+
+  EndPos := Self.Max - Self.PageSize;
+  if EndPos = 0 then
+    exit;
+
+  RealPos := 1.0 * Self.Max * ScrollPos / EndPos;
+  Position := Round(RealPos);
+
+  with TWaveScreen(Self.Owner) do
+  begin
+    Deviation := PageSize Div 2;
+    SetVisibleInterval(Position - Deviation, Position + Deviation);
+
+    Repaint;
+  end;
+end;
+
+procedure TWSScrollBar.SetPosition(Value: Integer);
+var RealPos: Extended;
+begin
+  if Value > Max then
+    Value := Max;
+  if Value < 0 then
+    Value := 0;
+
+  FPosition := Value;
+  RealPos := 1.0 * Value * (Max - PageSize) / Max;
+
+  inherited Position := Round(RealPos);
+end;
+
+procedure TWSScrollBar.SetPageSize(Value: Integer);
+begin
+  if Value > Max then
+    Value := Max;
+  if Value < Min then
+    Value := Min;
+
+  inherited PageSize := Value;
+end;
+
+function TWSScrollBar.GetPageSize: Integer;
+begin
+  Result := inherited PageSize;
+end;
+
+end.

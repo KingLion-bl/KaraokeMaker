@@ -1,0 +1,77 @@
+unit WaveScrollBar;
+
+interface
+
+uses
+  Vcl.StdCtrls, System.Classes;
+
+type
+
+  TWSScrollBar = class(TScrollBar)
+  private
+    FPosition: Integer;
+
+    procedure SetPosition(Value: Integer);
+
+  protected
+    procedure Scroll(ScrollCode: TScrollCode; var ScrollPos: Integer); override;
+
+  public
+    constructor Create(AOwner: TComponent); override;
+
+  published
+    property Position: Integer read FPosition write SetPosition default 0;
+
+  end;
+
+implementation
+
+uses
+  WaveScreen;
+
+{$REGION 'TWSScrollBar'}
+
+constructor TWSScrollBar.Create(AOwner: TComponent);
+begin
+  inherited;
+  PageSize := 1;
+
+  SetSubComponent(True);
+end;
+
+procedure TWSScrollBar.Scroll(ScrollCode: TScrollCode; var ScrollPos: Integer);
+var EndPos: Integer;
+    Deviation: Integer;
+    RealPos: Extended;
+begin
+  inherited;
+
+  EndPos := Self.Max - Self.PageSize;
+  if EndPos = 0 then
+    exit;
+
+  RealPos := 1.0 * Self.Max * ScrollPos / EndPos;
+  Position := Round(RealPos);
+
+  with TWaveScreen(Self.Owner) do
+  begin
+    Deviation := PageSize Div 2;
+    SetVisibleInterval(Position - Deviation, Position + Deviation);
+
+    SendDataToPaintWave;
+    Repaint;
+  end;
+end;
+
+procedure TWSScrollBar.SetPosition(Value: Integer);
+var RealPos: Extended;
+begin
+  FPosition := Value;
+  RealPos := 1.0 * Value * (Max - PageSize) / Max;
+
+  inherited Position := Round(RealPos);
+end;
+
+{$ENDREGION}
+
+end.

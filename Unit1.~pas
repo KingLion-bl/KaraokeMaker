@@ -1,0 +1,514 @@
+unit Unit1;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, MyType, {MyFilters1d, MyMatrix, MyMath,} MyWav, ExtCtrls;
+
+type
+  TForm1 = class(TForm)
+    PaintBox1: TPaintBox;
+    procedure FormResize(Sender: TObject);
+    procedure PaintBox1Paint(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+  private
+    Data:TArraySmallint;
+    YScale:Real;
+    { Private declarations }
+  public
+    procedure PrepeareWave;
+    { Public declarations }
+  end;
+
+var
+  Form1: TForm1;
+const
+ imNearest=0;
+ imLine=1;
+ imSinC=2;
+ imCubic=3;
+
+implementation
+
+{$R *.dfm}
+
+function  Sinc(x:Extended):Extended;
+begin
+If x<>0 then Result:=Sin(x)/(x) else Result:=1;
+end;
+
+function InterpolationLine(t:Real; a0,a1:Real ):Real; Overload;
+begin
+Result:=a0*(1-t) + a1*t;
+end;
+
+function InterpolationLine(t:Real; A:TArrayReal):Real; Overload;
+begin
+If Length(A)=2 then
+  InterpolationLine(t,A[0],A[1]);
+end;
+
+function InterpolationQuadratic(t:Real; a0,a1,a2:Real):Real; Overload;
+begin
+{
+f=c2*t^2+c1*t+c0;
+t=0.0, f==a0;
+t=1.0, f==a1;
+t=2.0, f==a2;}
+{решение
+1.
+c0=a0;
+c2+c1+c0=a1;
+c2*4+c1*2+c0=a2;
+2.
+c0=a0;
+3.
+c2+c1=a1-a0;
+c2*4+c1*2=a2-a0;
+4.
+c2*2+c1*2=2*(a1-a0);
+c2*4+c1*2=a2-a0;
+5.
+c2*2=a2-a0-2*a1+2*a0
+6.
+c2=0.5*(a2-2*a1+a0)
+7.
+c1=0.5*(a2-a0-2(a2-2*a1+a0))
+8.
+c1=0.5*(-a2+4*a1-3*a0)
+
+c0=a0;
+c1=0.5*(-a2+4*a1-3*a0);
+c2=0.5*(a2-2*a1+a0);
+}
+Result:=0.5*(a2-2*a1+a0)*t*t+0.5*(a2-2*a1+a0)*t+a0;
+end;
+
+function InterpolationQuadratic(t:Real; A:TArrayReal):Real; Overload;
+begin
+If Length(A)=3 then
+//  InterpolationCube(t,A[0],A[1],A[2]);
+end;
+
+
+function InterpolationCubic(t:Real; a0,a1,a2:Real):Real; Overload;
+begin
+{
+f=c3*t^3+c2*t^2+c1*t+c0;
+t=0.0, f==a0;
+t=1.0, f==a1;
+t=2.0, f==a2;
+t=3.0, f==a3;}
+{решение по методу Гауса
+1.
+c0=a0;
+c3+c2+c1+c0=a1;
+c3*8+c2*4+c1*2+c0=a2;
+c3*27+c2*9+c1*3+c0=a3;
+2.
+c0=a0;
+3.
+c3+c2+c1=a1-a0;
+c3*8+c2*4+c1*2=a2-a0;
+c3*27+c2*9+c1*3=a3-a0;
+4.
+c3+c2+c1=a1-a0;
+  -c2*4-c1*6=a2-8*a1-9*a0;
+  -c2*18-c1*24=a3-27*a1-28*a0;
+5.
+c3+c2+c1=a1-a0;
+  -c2*4-c1*6=a2-8*a1-9*a0;
+       +c1*3=a3-a2*4.5+9*a1+12.5*a0;
+
+6.
+c1=1/3*(a3-a2*4.5+9*a1+12.5*a0)
+c1=1/3*a3-a2*4.5+9*a1+12.5*a0)
+7.
+  -c2*4-c1*6=a2-8*a1-9*a0;
+       +c1*6=2*a3-a2*9+18*a1+25*a0;
+8.
+-c2*4=2*a3-8*a2-10*a1+16*a0
+c2*4=-2*a3+8*a2+10*a1-16*a0
+c2*2=-a3+4*a2+5*a1-8*a0
+c2=-0.5*a3+2*a2+2.5*a1-4*a0
+9.
+c3+c2+c1=a1-a0;
+c3=a1-a0+0.5*a3-2*a2-2.5^a1+4*a0-1/3*(a3-a2*4.5+9*a1+12.5*a0);
+c3=1/6*a3-0.5*a2-4.5*a1-3.5/3*a0;
+}
+//Result:=(1/6*a3-0.5*a2-4.5*a1-3.5/3*a0)*t*t*t+(-0.5*a3+2*a2+2.5*a1-4*a0)*t*t+1/3*(a3-a2*4.5+9*a1+12.5*a0)*t+a0;
+end;
+
+function InterpolationCubic(t:Real; A:TArrayReal):Real; Overload;
+begin
+If Length(A)=3 then
+//  InterpolationCube(t,A[0],A[1],A[2]);
+end;
+
+// Кривые Безье
+// Вычисление значение кривой от параметра
+// интегрирование кривой Безье
+// Дифференцирование
+// Разбиение кривой пополам
+// соединение 2-х кривых
+// замыкание кривой
+// размыкание кривой
+// точки в базовые точки
+// интерполирование кривой безье
+// Разбиение на полигон.
+
+// Кривая эрмита.
+
+
+
+{function Bezier(t:Real; BezierBasePoints:TArrayReal):Real; overload;
+var
+  L,i:Integer;
+  B:Real;
+begin
+B:=1;
+L:=Length(Points);
+Result:=Result+Points[0]*B;
+for i:= 1 to (L-1) shr 1 do
+  begin
+  B:=B/i*(L-i)*t/(1-t);
+  Result:=Result+Points[i]*B+Points[L-i]*B;
+  end;
+  B:=B/i*(L-i)*t/(1-t);
+  if Odd(L)=False then  Result:=Result+Points[(L shr 1)]*B;
+end;
+}
+//function InterpolationCubic(t:Real; A:TArrayReal):Real; Overload;
+
+
+procedure InterpolationSinC(var OutA:TArraySmallint;InA:TArraySmallint);
+var
+ i,j,k:integer;
+ dT,F,T, sr:Real;
+ FactorSize:Real;
+ OldLength,NewLength:integer;
+begin
+{Переписать через FFT}
+OldLength:=Length(InA);
+NewLength:=Length(OutA);
+if (OldLength=0) then exit;
+
+FactorSize:=(NewLength-1)/(OldLength-1);
+dT:=1/FactorSize;
+For j:=0 to NewLength-1 do
+  begin
+  sr:=0;
+  F:=0;
+  For k:=-32767 to 32767 do    {массив Smallint при переборее за 32767 вклад будет меньше единицы}
+      begin
+      I:=round(j*dt+K);
+      T:=(j*dt-I);
+      sr:=sr+SinC(Pi*T)*InA[((I mod OldLength)+OldLength) mod OldLength]; {Метод SinC предпологает цикличность}
+      F:=F+(SinC(Pi*T));
+      end;
+  if sr>32767	 then OutA[j]:=32767
+     else if sr<-32768	 then OutA[j]:=-32768
+       else  OutA[j]:=Round(sr/F);
+  end;
+end;
+
+procedure ReSizeArray(var OutA:TArraySmallint;InA:TArraySmallint; NewLength:Integer; InterpolationMode:Integer=0);
+var OldLength:Integer;
+dT,F:Real;
+T:Real;
+FactorSize:Real;
+i,j:Integer;
+S:Int64;
+begin
+OldLength:=Length(InA);
+FactorSize:=(NewLength-1)/(OldLength-1);
+SetLength(OutA,NewLength);
+if FactorSize<1 then {Уменьшаем}
+  begin
+  {Метод подсчёта среднего по n=OldLength/NewLength}
+  {На крае при подсчёте среднего используется линейное интерполирование}
+  dT:=FactorSize;
+  s:=0;
+  T:=0;
+  j:=0;
+  i:=0;
+  While i<OldLength do
+    begin
+    if T+dT>1 then
+      begin
+      OutA[j]:=Round(S*dT+InA[i]*(1-T));
+      Inc(j);
+      T:=T+dT-1;
+      S:=Round(InA[i]*T);
+      end else
+      begin
+      s:=s+InA[i];
+      T:=T+dt;
+      end;
+    Inc(i);
+    end;
+  end else {FactorSize>1} {Увеличиваем}
+  begin
+  case InterpolationMode of
+  0: {Метод ближайшего соседа.}
+    begin
+    dT:=1/FactorSize;
+    for j:=0 to NewLength-1 do
+      begin
+      OutA[j]:=InA[Round(j*dt)];
+      end;
+    end;
+  1: {Линейное интерполирование}
+    begin
+    dT:=1/FactorSize;
+    for j:=0 to NewLength-2 do
+      begin
+      T:=j*dt;
+      i:=Trunc(T);
+      F:=Frac(T);
+      OutA[j]:=Round((1-F)*InA[i]+F*InA[i+1]);
+      end;
+      j:=NewLength-1;
+      T:=j*dt;
+      i:=Trunc(T);
+      F:=Frac(T);
+      OutA[j]:=Round((1-0)*InA[i]);
+    end;
+  2: {SinC}
+    begin
+     InterpolationSinC(OutA,InA);
+    end;
+  3: {Кубический}
+  end; {Case}
+  end;
+end;
+
+procedure GetMaxMin(var Max,Min:TArraySmallint; InA:TArraySmallint; OutLength:Integer; InterpolationMode:Integer=0);
+var OldLength:Integer;
+FactorSize:Real;
+MaxS,MinS:Smallint;
+dt,T:Real;
+i,j:Integer;
+begin
+
+OldLength:=Length(InA);
+FactorSize:=(OutLength-1)/(OldLength-1);
+SetLength(Max,OutLength);
+SetLength(Min,OutLength);
+if Length(InA)=0 then Exit;
+
+if FactorSize<1 then {Уменьшаем}
+  begin
+  {Метод подсчёта среднего по n=OutLength/NewLength}
+  {На крае при подсчёте среднего используется линейное интерполирование}
+  dT:=FactorSize;
+  MaxS:=InA[0];
+  MinS:=InA[0];
+  T:=0;
+  j:=0;
+  i:=0;
+  While i<OldLength do
+    begin
+    if T+dT>1 then
+      begin
+      Max[j]:=MaxS;
+      Min[j]:=MinS;
+      T:=T+dT-1;
+      if (InA[i]>MaxS) then
+       begin
+       MinS:=MaxS;
+       MaxS:=InA[i];
+       end
+       else if (InA[i]<MinS) then
+       begin
+       MaxS:=MinS;
+       MinS:=InA[i];
+       end else
+       begin
+       MaxS:=InA[i];
+       MinS:=InA[i];
+       end;
+      Inc(j);
+      end else
+      begin
+      if InA[i]>MaxS then MaxS:=InA[i];
+      if InA[i]<MinS then MinS:=InA[i];
+      T:=T+dt;
+      end;
+    Inc(i);
+    end;
+  end else {FactorSize>1} {Увеличиваем}
+  begin
+  ReSizeArray(Max,InA, OutLength,InterpolationMode);
+  Min[0]:=Max[0];
+  for i:=1 to OutLength-1 do
+   Min[i]:=Max[i-1];
+  for i:=1 to OutLength-1 do
+   if Min[i]>Max[i] then
+     begin
+     MaxS:=Max[i];
+     Max[i]:=Min[i];
+     Min[i]:=MaxS;
+     end;
+  end;
+end;
+
+procedure DrawAxis;
+var
+ TempColor:TColor;
+ TemoWidth:Integer;
+begin
+With Form1.PaintBox1 do
+  begin
+  TempColor:=Canvas.Pen.Color;
+  TemoWidth:=Canvas.Pen.Width;
+  Canvas.Pen.Color:=clRed;
+  Canvas.Pen.Width:=1;
+  Canvas.MoveTo(0, Height div 2);
+  Canvas.LineTo(Width, Height div 2);
+  Canvas.Pen.Color:=TempColor;
+  Canvas.Pen.Width:=TemoWidth;
+  end;
+end;
+
+procedure DrawDataLine(Data:TArraySmallint);
+var
+ i:Integer;
+ NewLength,OldLength:Integer;
+ F:Real;
+begin
+f:=Form1.PaintBox1.Height/65536;
+
+OldLength:=Length(Data);
+NewLength:=Form1.PaintBox1.Width;
+With Form1.PaintBox1 do
+  begin
+  Canvas.Pen.Color:=clRed;
+  For i:=0 to Length(Data)-1 do
+   begin
+   Canvas.MoveTo(round((NewLength-1)/(OldLength-1)*i),Height shr 1);
+   Canvas.LineTo(round((NewLength-1)/(OldLength-1)*i),Height shr 1-Round(Data[i]*f));
+   end;
+ end;
+end;
+
+procedure DrawDataPoint(Data:TArraySmallint);
+var
+ i:Integer;
+ NewLength,OldLength:Integer;
+ F:Real;
+begin
+With Form1.PaintBox1 do
+  begin
+  f:=Height/65536;
+
+  OldLength:=Length(Data);
+  NewLength:=Width;
+
+  For i:=0 to Length(Data)-1 do
+    Canvas.Pixels[round((NewLength-1)/(OldLength-1)*i),Height shr 1-Round(Data[i]*f)]:=clRed;
+  end;
+end;
+
+// Ядро берется по центру
+procedure FiltrFIR_Center(var y,x:TArrayReal; b:TArrayReal);
+var i,j,r:Integer;
+s:Real;
+begin
+SetLength(y,Length(x));
+r:=Length(b) div 2;
+for i:=0 to Length(x)-1 do
+ begin
+ s:=0;
+ for j:=0 to 2*r do
+   if (i+j-r>=0) and (i+j-r<Length(x)) then s:=s+x[i+j-r]*b[j];
+  y[i]:=s;
+ end;
+end;
+
+// Рассщет коэфициентов Гаусовского фильтрера для реализации через КИХ фильтр
+procedure GausianFIR(var a:TArrayReal; Sigma:Real);
+var i,r:Integer;
+s:Real;
+begin
+s:=0;
+r:=round(Sigma * 3*sqrt(2*pi)/4);
+SetLength(a,2*r+1);
+for i:=0 to Length(a)-1 do
+ begin
+ a[i]:=1/(sqrt(2*pi)*Sigma)*Exp(-sqr(i-r)/(2*Sigma*Sigma));
+ s:=s+a[i];
+ end;
+for i:=0 to Length(a)-1 do
+ a[i]:=a[i]/s;
+end;
+
+procedure FiltrGausianFIR(var y,x:TArrayReal; Sigma:Real);
+var b:TArrayReal;
+begin
+GausianFIR(b,Sigma);
+FiltrFIR_Center(y,x,b);
+end;
+
+procedure TForm1.PrepeareWave;
+var
+n, i:Integer;
+Canals:TArrayArrayReal;
+C:TArrayReal;
+s:DWord;
+begin
+ReadWave('C:\downloads\hockey game.wav', Canals, s);
+n:=Length(Canals[0]);
+for i:= 0 to n-1 do
+  Canals[0][i]:=abs(Canals[0][i]);
+FiltrGausianFIR(C,Canals[0], 50);
+SetLength(Data,n);
+for i:= 0 to n-1 do
+  Data[i]:=Round(C[i]);
+
+
+end;
+
+procedure TForm1.FormResize(Sender: TObject);
+begin
+ PaintBox1.Repaint;
+end;
+
+procedure TForm1.PaintBox1Paint(Sender: TObject);
+var
+  NewLength:Integer;
+  Max,Min:TArraySmallint;
+  f:Real;
+  i:Integer;
+begin
+with PaintBox1 do
+  begin
+  NewLength:=Width;
+  GetMaxMin(Max,Min,Data,NewLength,imLine);
+  f:=Height*YScale/65536;
+  Canvas.Brush.Color:=clBlack;
+  Canvas.FillRect(ClientRect);
+  DrawAxis;
+  Canvas.Pen.Color:=clLime;
+  For i:=0 to NewLength-1 do
+   begin
+   Canvas.MoveTo(i,Height shr 1-Round(Max[i]*f));
+   Canvas.LineTo(i,Height shr 1-Round(Min[i]*f)+1);
+   end;
+  For i:=0 to NewLength-1 do
+   begin
+   Canvas.MoveTo(i,Height shr 1+Round(Min[i]*f));
+   Canvas.LineTo(i,Height shr 1+Round(Max[i]*f)+1);
+   end;
+   //DrawDataLine(Data);
+   end;
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  PrepeareWave;
+  YScale:=1; // Для 8 битных файлов Выставить 256;
+end;
+
+end.

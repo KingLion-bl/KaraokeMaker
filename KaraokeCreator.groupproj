@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{21509B00-ED42-48D6-B2BE-7CAF06BCFC2C}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="LirycsCreator.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="Packages\CreateLirycs.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="LirycsCreator">
+        <MSBuild Projects="LirycsCreator.dproj"/>
+    </Target>
+    <Target Name="LirycsCreator:Clean">
+        <MSBuild Projects="LirycsCreator.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="LirycsCreator:Make">
+        <MSBuild Projects="LirycsCreator.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="CreateLirycs">
+        <MSBuild Projects="Packages\CreateLirycs.dproj"/>
+    </Target>
+    <Target Name="CreateLirycs:Clean">
+        <MSBuild Projects="Packages\CreateLirycs.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="CreateLirycs:Make">
+        <MSBuild Projects="Packages\CreateLirycs.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="LirycsCreator;CreateLirycs"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="LirycsCreator:Clean;CreateLirycs:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="LirycsCreator:Make;CreateLirycs:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>

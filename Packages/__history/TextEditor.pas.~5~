@@ -1,0 +1,40 @@
+unit TextEditor;
+
+interface
+
+uses
+  System.SysUtils, System.Classes, Vcl.Controls, Vcl.StdCtrls, Vcl.ComCtrls,
+  WinApi.Messages, System.Types, WinApi.Windows, RichEdit, Graphics;
+
+type
+  TTextEditor = class(TRichEdit)
+  private
+    { Private declarations }
+
+  protected
+    { Protected declarations }
+  public
+    { Public declarations }
+    constructor Create(AOwner: TComponent); override;
+
+  published
+    { Published declarations }
+  end;
+
+procedure Register;
+
+implementation
+
+constructor TTextEditor.Create(AOwner: TComponent);
+begin
+  inherited;
+
+end;
+
+
+procedure Register;
+begin
+  RegisterComponents('WaveScreen', [TTextEditor]);
+end;
+
+end.

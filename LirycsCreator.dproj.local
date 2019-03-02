@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<BT_BuildType>Debug</BT_BuildType>
+	<Transactions>
+    <Transaction>1899.12.30 00:00:00.000.248,C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\SongTextEditor.pas=</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.649,C:\Users\KingLion\Desktop\Огибающая\Project1.dproj=C:\Users\KingLion\Desktop\Огибающая\LirycsCreator.dproj</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.461,=C:\Users\KingLion\Documents\Embarcadero\Studio\Components\LirycsCreator\Additional.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.412,C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\SongTextEditor.pas=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\TextEditor.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.427,=C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\Karaoke\Packages\TextEditor.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.996,=C:\Users\KingLion\Documents\Embarcadero\Studio\Components\dscintilla-master\Sources\DScintilla.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.108,C:\Users\KingLion\Documents\Embarcadero\Studio\Components\dscintilla-master\Sources\DScintilla.pas=</Transaction>
+  </Transactions>
+</BorlandProject>

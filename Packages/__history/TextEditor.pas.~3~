@@ -1,0 +1,62 @@
+unit TextEditor;
+
+interface
+
+uses
+  System.SysUtils, System.Classes, Vcl.Controls, Vcl.StdCtrls, Vcl.ComCtrls,
+  WinApi.Messages, System.Types, WinApi.Windows, RichEdit;
+
+type
+  TTextEditor = class(TRichEdit)
+  private
+    { Private declarations }
+    procedure WMPaint(var Message: TWMPaint); message WM_PAINT;
+
+  protected
+    { Protected declarations }
+  public
+    { Public declarations }
+    constructor Create(AOwner: TComponent); override;
+
+  published
+    { Published declarations }
+  end;
+
+procedure Register;
+
+implementation
+
+constructor TTextEditor.Create(AOwner: TComponent);
+begin
+  inherited;
+
+  ControlState := ControlState + [csCustomPaint];
+end;
+
+procedure ColoredLineInRichEdit(REd: TCustomRichEdit; const ALine: Integer; const BColor, FColor: TColor);
+var XFormat: TCharFormat2; P: TPoint;
+begin
+  FillChar(XFormat, SizeOf(XFormat), 0);
+  XFormat.cbSize:=sizeOf(TCharFormat2);
+  XFormat.dwMask:=CFM_BACKCOLOR or CFM_COLOR;
+  XFormat.crBackColor:=ColorToRGB(BColor);
+  XFormat.crTextColor:=ColorToRGB(FColor);
+  P.Y:=ALine-1; P.X:=0; REd.CaretPos:=P;
+  Red.SelLength:=Length(REd.Lines[ALine]);
+  SendMessage(REd.Handle, EM_SETCHARFORMAT, SCF_WORD or SCF_SELECTION, LPARAM(@XFormat));
+end;
+
+var
+  Painting: Boolean = False;
+
+procedure TTextEditor.WMPaint(var Message: TWMPaint);
+begin
+  ColoredLineInRichEdit(Self, 1, clRed, clBlue);
+end;
+
+procedure Register;
+begin
+  RegisterComponents('WaveScreen', [TTextEditor]);
+end;
+
+end.
