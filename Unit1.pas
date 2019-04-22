@@ -20,7 +20,7 @@ type
     Splitter1: TSplitter;
     Button2: TButton;
     Panel2: TPanel;
-    SongTextEditor: TSongTextEditor;
+    StringGrid1: TStringGrid;
 
 
     procedure FormResize(Sender: TObject);
@@ -33,6 +33,10 @@ type
     procedure AutoScrollClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
+    procedure StringGrid1GetEditMask(Sender: TObject; ACol, ARow: Integer;
+      var Value: string);
+    procedure StringGrid1DrawCell(Sender: TObject; ACol, ARow: Integer;
+      Rect: TRect; State: TGridDrawState);
 
   private
     { Private declarations }
@@ -72,6 +76,39 @@ begin
       TMPBtnType.btStop: Timer.Enabled := False;
     end;
 
+end;
+
+procedure TMainForm.StringGrid1DrawCell(Sender: TObject; ACol, ARow: Integer;
+  Rect: TRect; State: TGridDrawState);
+var
+  curText: string;
+  curTextWidth: Integer;
+  curTextHeight: Integer;
+begin
+
+  if (ACol = 0) and not(gdFixed in State) then
+    with StringGrid1.Canvas do
+      begin
+        Brush.Color := clAqua;
+        Rectangle(Rect);
+
+        curText := StringGrid1.Cells[ACol, ARow];
+
+        curTextWidth := TextWidth(curText);
+        curTextHeight := TextHeight(curText);
+
+        TextOut(Rect.Left + (Rect.Width - curTextWidth) div 2,
+                Rect.Top +  (Rect.Height - curTextHeight) div 2,
+                curText);
+      end;
+
+end;
+
+procedure TMainForm.StringGrid1GetEditMask(Sender: TObject; ACol, ARow: Integer;
+  var Value: string);
+begin
+  if ACol = 0 then
+    Value := '00.00.00';
 end;
 
 procedure TMainForm.TimerTimer(Sender: TObject);

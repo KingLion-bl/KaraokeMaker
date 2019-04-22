@@ -125,23 +125,35 @@ object MainForm: TMainForm
     Align = alClient
     Caption = 'Panel2'
     TabOrder = 1
-  end
-  object SongTextEditor: TSongTextEditor
-    Left = 0
-    Top = 429
-    Width = 852
-    Height = 238
-    Align = alClient
-    Font.Charset = RUSSIAN_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -19
-    Font.Name = 'MS Sans Serif'
-    Font.Style = []
-    Lines.Strings = (
-      'SongTextEditor')
-    ParentFont = False
-    TabOrder = 2
-    Zoom = 100
+    object StringGrid1: TStringGrid
+      Left = 1
+      Top = 1
+      Width = 850
+      Height = 236
+      Align = alClient
+      ColCount = 2
+      FixedCols = 0
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goAlwaysShowEditor]
+      ParentFont = False
+      TabOrder = 0
+      OnDrawCell = StringGrid1DrawCell
+      OnGetEditMask = StringGrid1GetEditMask
+      ExplicitLeft = 0
+      ColWidths = (
+        103
+        721)
+      RowHeights = (
+        24
+        24
+        24
+        24
+        24)
+    end
   end
   object Timer: TTimer
     Enabled = False
