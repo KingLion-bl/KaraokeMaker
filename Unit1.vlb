@@ -9,11 +9,8 @@ Coordinates=25,77,47,36
 Visible=True
 
 []
-Coordinates=133,1,80,58
-Visible=True
-
-[MediaPlayer]
 Coordinates=251,155,86,36
+Visible=True
 
 [AutoScroll]
 Coordinates=0,0,114,58

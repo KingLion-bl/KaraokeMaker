@@ -46,20 +46,6 @@ object MainForm: TMainForm
       DesignSize = (
         850
         73)
-      object MediaPlayer: TMediaPlayer
-        Left = 10
-        Top = 16
-        Width = 85
-        Height = 41
-        VisibleButtons = [btPlay, btPause, btStop]
-        DoubleBuffered = True
-        FileName = 
-          'C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\KaraokeM' +
-          'aker\wave-16.wav'
-        ParentDoubleBuffered = False
-        TabOrder = 0
-        OnClick = MediaPlayerClick
-      end
       object AutoScroll: TCheckBox
         Left = 731
         Top = 6
@@ -67,7 +53,7 @@ object MainForm: TMainForm
         Height = 17
         Anchors = [akTop, akRight]
         Caption = #1040#1074#1090#1086#1087#1088#1086#1082#1088#1091#1090#1082#1072
-        TabOrder = 1
+        TabOrder = 0
         OnClick = AutoScrollClick
       end
       object Button1: TButton
@@ -77,17 +63,36 @@ object MainForm: TMainForm
         Height = 25
         Anchors = [akTop, akRight]
         Caption = #1050#1091#1088#1089#1086#1088' '#1074' '#1094#1077#1085#1090#1088#1077
-        TabOrder = 2
+        TabOrder = 1
         OnClick = Button1Click
       end
-      object Button2: TButton
-        Left = 624
-        Top = 6
-        Width = 75
-        Height = 46
-        Caption = #1052#1085#1086#1075#1086#1089#1090#1088#1086#1095#1085#1072#1103' '#1082#1085#1086#1087#1082#1072
-        TabOrder = 3
-        OnClick = Button2Click
+      object Panel4: TPanel
+        Left = 1
+        Top = 1
+        Width = 696
+        Height = 71
+        Align = alLeft
+        BevelOuter = bvNone
+        Caption = 'Panel4'
+        TabOrder = 2
+        object MediaPlayer: TMediaPlayer
+          Left = 0
+          Top = 0
+          Width = 695
+          Height = 71
+          Align = alClient
+          VisibleButtons = [btPlay, btStop]
+          DoubleBuffered = True
+          FileName = 
+            'C:\Users\KingLion\Documents\Embarcadero\Studio\Projects\KaraokeM' +
+            'aker\wave-16.wav'
+          ParentDoubleBuffered = False
+          TabOrder = 0
+          OnClick = MediaPlayerClick
+          ExplicitTop = 3
+          ExplicitWidth = 57
+          ExplicitHeight = 69
+        end
       end
     end
     object WaveScreen: TWaveScreen
@@ -102,7 +107,6 @@ object MainForm: TMainForm
       PaintBox.Top = 1
       PaintBox.Width = 848
       PaintBox.Height = 322
-      PaintBox.OnMouseDown = WaveScreenPaintBoxMouseDown
       PaintBox.ExplicitLeft = 0
       PaintBox.ExplicitTop = 0
       PaintBox.ExplicitWidth = 0
@@ -112,9 +116,11 @@ object MainForm: TMainForm
       ScrollBar.Width = 846
       ScrollBar.Height = 23
       ScrollBar.Align = alClient
-      ScrollBar.PageSize = 1
+      ScrollBar.PageSize = 28
+      ScrollBar.Position = 15
       ScrollBar.TabOrder = 0
       AutoScroll = False
+      OnSelectPosition = WaveScreenSelectPosition
     end
   end
   object Panel2: TPanel
@@ -125,25 +131,23 @@ object MainForm: TMainForm
     Align = alClient
     Caption = 'Panel2'
     TabOrder = 1
-    object StringGrid1: TStringGrid
+    object SongTextTable: TStringGrid
       Left = 1
       Top = 1
       Width = 850
       Height = 236
       Align = alClient
       ColCount = 2
-      FixedCols = 0
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -16
       Font.Name = 'MS Sans Serif'
       Font.Style = []
-      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goAlwaysShowEditor]
+      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goEditing]
       ParentFont = False
       TabOrder = 0
-      OnDrawCell = StringGrid1DrawCell
-      OnGetEditMask = StringGrid1GetEditMask
-      ExplicitLeft = 0
+      OnDrawCell = SongTextTableDrawCell
+      OnGetEditMask = SongTextTableGetEditMask
       ColWidths = (
         103
         721)

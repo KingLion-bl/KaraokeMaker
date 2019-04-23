@@ -11,16 +11,16 @@ type
 
   TMainForm = class(TForm)
     Panel1: TPanel;
-    MediaPlayer: TMediaPlayer;
     WaveScreen: TWaveScreen;
     Timer: TTimer;
     AutoScroll: TCheckBox;
     Button1: TButton;
     Panel3: TPanel;
     Splitter1: TSplitter;
-    Button2: TButton;
     Panel2: TPanel;
-    StringGrid1: TStringGrid;
+    SongTextTable: TStringGrid;
+    Panel4: TPanel;
+    MediaPlayer: TMediaPlayer;
 
 
     procedure FormResize(Sender: TObject);
@@ -28,15 +28,14 @@ type
     procedure MediaPlayerClick(Sender: TObject; Button: TMPBtnType;
       var DoDefault: Boolean);
     procedure TimerTimer(Sender: TObject);
-    procedure WaveScreenPaintBoxMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
     procedure AutoScrollClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
-    procedure Button2Click(Sender: TObject);
-    procedure StringGrid1GetEditMask(Sender: TObject; ACol, ARow: Integer;
+    procedure SongTextTableGetEditMask(Sender: TObject; ACol, ARow: Integer;
       var Value: string);
-    procedure StringGrid1DrawCell(Sender: TObject; ACol, ARow: Integer;
+    procedure SongTextTableDrawCell(Sender: TObject; ACol, ARow: Integer;
       Rect: TRect; State: TGridDrawState);
+    procedure WaveScreenSelectPosition(Sender: TObject;
+      Time: Extended);
 
   private
     { Private declarations }
@@ -78,7 +77,7 @@ begin
 
 end;
 
-procedure TMainForm.StringGrid1DrawCell(Sender: TObject; ACol, ARow: Integer;
+procedure TMainForm.SongTextTableDrawCell(Sender: TObject; ACol, ARow: Integer;
   Rect: TRect; State: TGridDrawState);
 var
   curText: string;
@@ -86,13 +85,13 @@ var
   curTextHeight: Integer;
 begin
 
-  if (ACol = 0) and not(gdFixed in State) then
-    with StringGrid1.Canvas do
+  if (ACol = 0) and (ARow <> 0) then
+    with SongTextTable.Canvas do
       begin
         Brush.Color := clAqua;
         Rectangle(Rect);
 
-        curText := StringGrid1.Cells[ACol, ARow];
+        curText := SongTextTable.Cells[ACol, ARow];
 
         curTextWidth := TextWidth(curText);
         curTextHeight := TextHeight(curText);
@@ -104,7 +103,7 @@ begin
 
 end;
 
-procedure TMainForm.StringGrid1GetEditMask(Sender: TObject; ACol, ARow: Integer;
+procedure TMainForm.SongTextTableGetEditMask(Sender: TObject; ACol, ARow: Integer;
   var Value: string);
 begin
   if ACol = 0 then
@@ -117,17 +116,20 @@ begin
   WaveScreen.Repaint;
 end;
 
-procedure TMainForm.WaveScreenPaintBoxMouseDown(Sender: TObject;
-          Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-var PlayAfterSetPosition: Boolean;
+procedure TMainForm.WaveScreenSelectPosition(Sender: TObject;
+  Time: Extended);
+var curRow: Integer;
+    TimeAsInt, Hours, Minutes, Seconds: Integer;
+    PlayAfterSetPosition: Boolean;
     AutoScroll: Boolean;
 begin
+
   Timer.Enabled := False;
 
   AutoScroll := WaveScreen.AutoScroll;
   WaveScreen.AutoScroll := False;
 
-  WaveScreen.CursorPositionAsSamples := WaveScreen.SampleByX(X);
+  WaveScreen.CursorPositionAsTime := Time;
   WaveScreen.Repaint;
 
   PlayAfterSetPosition := MediaPlayer.Mode = mpPlaying;
@@ -139,6 +141,19 @@ begin
   WaveScreen.AutoScroll := AutoScroll;
 
   Timer.Enabled := True;
+
+
+  curRow := SongTextTable.Row;
+
+  TimeAsInt := Trunc(Time);
+  Hours :=  TimeAsInt div 60 div 60;
+  Minutes := TimeAsInt div 60 mod 60;
+  Seconds := TimeAsInt mod 60;
+
+  SongTextTable.Cells[0, curRow] := Format('%.2d', [Hours]) + '.' +
+                                    Format('%.2d', [Minutes]) + '.' +
+                                    Format('%.2d', [Seconds]);
+
 end;
 
 procedure TMainForm.AutoScrollClick(Sender: TObject);
@@ -151,36 +166,10 @@ begin
   WaveScreen.ShowCursorAtScreenCenter;
 end;
 
-procedure TMainForm.Button2Click(Sender: TObject);
-var Res: Boolean;
-    i: integer;
-    Text: String;
-begin
-  //SetWindowLong(Button2.Handle, GWL_STYLE, GetWindowLong(Button2.Handle, GWL_STYLE) OR BS_MULTILINE);
-
- // SongTextEditor.SelAttributes.BGColor := clRed;
-end;
-
-//procedure TMainForm.NewEditWindowProc(var Message: TMessage);
-//begin
-//
-//  // перехватываем сообщение о вставке
-//  if Message.Msg = WM_PASTE then
-//    SongTextEditor.Text := 'Вставка!!!'
-//  else
-//    OldWindowProc(Message);
-//
-//end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 var FileName: string;
 begin
-
-//  // Запоминаем старую оконную процедуру
-//  OldWindowProc := SongTextEditor.WindowProc;
-//  // Заменяем ее новой
-//  SongTextEditor.WindowProc := NewEditWindowProc;
-
 
   FileName:= 'wave-16.wav';
   MediaPlayer.FileName := ExtractFilePath(ParamStr(0)) + FileName;

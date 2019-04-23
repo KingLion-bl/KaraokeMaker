@@ -16,10 +16,14 @@ const
 type
   TBig = array[0..0] of Integer;
 
+  TWaveScreenSelectPosition = procedure(Sender: TObject; Time: Extended) of object;
+
   TWaveScreen = class(TPanel)
   private
     FPaintBox: TWSPaintBox;
     FScrollBar: TWSScrollBar;
+
+    FWaveScreenSelectPosition: TWaveScreenSelectPosition;
 
     FNotRepaint: Boolean;
 
@@ -38,7 +42,8 @@ type
 
     FVisibleInterval: TInterval;
 
-    procedure PaintWS(Sender: TObject);
+    procedure PaintWaveScreen(Sender: TObject);
+    procedure WaveScreenMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 
     // Установка и чтение текущей позиции "волны": сэмплы от начала файла
     procedure SetWavePositionBySamples(APosition: Integer);
@@ -62,6 +67,8 @@ type
     function GetFileOpened: boolean;
 
     procedure FullDisplayedDataGenerate;
+
+
 
   protected
     function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean; override;
@@ -102,8 +109,10 @@ type
     property WavePositionAsSamples: Integer read GetWavePositionAsSamples write SetWavePositionBySamples;
 
     // Текущее положение курсора в секундах и сэмплах
-    property CursorPositionAsTime: Extended read GetCursorPositionAsTime write SetCursorPositionByTime;
-    property CursorPositionAsSamples: Integer read GetCursorPositionAsSamples write SetCursorPositionBySamples;
+    property CursorPositionAsTime: Extended read GetCursorPositionAsTime
+                                            write SetCursorPositionByTime;
+    property CursorPositionAsSamples: Integer read GetCursorPositionAsSamples
+                                              write SetCursorPositionBySamples;
 
     // Время указывается в секундах
     property LengthAsTime: Extended read GetLengthAsTime;
@@ -119,6 +128,8 @@ type
     // автопрокрутка вместе с курсором
     property AutoScroll: Boolean read FAutoScroll write SetAutoScroll default True;
 
+    property OnSelectPosition: TWaveScreenSelectPosition read FWaveScreenSelectPosition
+                                                         write FWaveScreenSelectPosition;
   end;
 
 
@@ -127,6 +138,7 @@ procedure Register;
 implementation
 
 uses Variants, Winapi.Windows;
+
 
 constructor TWaveScreen.Create(AOwner: TComponent);
 var GroupPanel: TPanel;
@@ -157,7 +169,8 @@ begin
     Parent := Self;
     Name := 'PaintBox';
     Align := alClient;
-    OnPaint := PaintWS;
+    OnPaint := PaintWaveScreen;
+    OnMouseDown := WaveScreenMouseDown;
   end;
 
   FWavData := TWavData.Create;
@@ -168,6 +181,7 @@ begin
   inherited;
 end;
 
+
 function TWaveScreen.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean;
 var NewIntervalSize: Integer;
   Deviation: Integer;
@@ -177,7 +191,7 @@ begin
   NotRepaint := true;
 
   // Вычисляем новый видимый интервал
-  if WheelDelta < 0 then
+  if WheelDelta > 0 then
     NewIntervalSize := Round(GetVisibleSamplesCount * 95 / 100)
   else
     NewIntervalSize := Round(GetVisibleSamplesCount * 100 / 95);
@@ -201,6 +215,8 @@ begin
 
   Result := True;
 end;
+
+
 
 function TWaveScreen.GetVisibleSamplesCount: Integer;
 begin
@@ -415,7 +431,7 @@ begin
   FPaintBox.Paint;
 end;
 
-procedure TWaveScreen.PaintWS(Sender: TObject);
+procedure TWaveScreen.PaintWaveScreen(Sender: TObject);
 var
   PaintWave: TWSPaintBox;
   NewLength: integer;
@@ -472,6 +488,18 @@ begin
     end;
 
     Canvas.Draw(0, 0, ScrBitmap);
+  end;
+end;
+
+procedure TWaveScreen.WaveScreenMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  inherited;
+
+  if Assigned(OnSelectPosition) then
+  begin
+    CursorPositionAsSamples := SampleByX(X);
+    Repaint;
+    OnSelectPosition(Self, CursorPositionAsTime);
   end;
 end;
 

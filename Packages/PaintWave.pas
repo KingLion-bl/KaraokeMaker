@@ -6,6 +6,8 @@ uses Vcl.Controls, Vcl.Graphics, System.Classes, WavData, MyType;
 
 type
 
+
+
   TWSPaintBox = class(TGraphicControl)
   public
     ScrBitmap: TBitmap;
@@ -37,10 +39,9 @@ type
     procedure SetDisplayedData(AllData: TDisplayedData; Min, Max: Integer);
     procedure Repaint(PageSize: integer);
 
-  published
-    property OnMouseDown;
-    property OnMouseUp;
     property OnPaint: TNotifyEvent read FOnPaint write FOnPaint;
+    property OnMouseDown;
+
   end;
 
 implementation
