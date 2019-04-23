@@ -5,8 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ExtCtrls, Vcl.MPlayer, Vcl.ComCtrls, WaveScreen, Vcl.StdCtrls,
-  Vcl.Grids, DScintilla, DScintillaCustom, Vcl.ValEdit, TextEditor,
-  SongTextEditor, RegExpr;
+  Vcl.Grids, Vcl.ValEdit, SongTextEditor;
 
 type
 
@@ -17,11 +16,13 @@ type
     Timer: TTimer;
     AutoScroll: TCheckBox;
     Button1: TButton;
-    Panel2: TPanel;
     Panel3: TPanel;
     Splitter1: TSplitter;
     Button2: TButton;
+    Panel2: TPanel;
     SongTextEditor: TSongTextEditor;
+
+
     procedure FormResize(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure MediaPlayerClick(Sender: TObject; Button: TMPBtnType;
@@ -32,10 +33,12 @@ type
     procedure AutoScrollClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
-    procedure SongTextEditorChange(Sender: TObject);
 
   private
     { Private declarations }
+    OldWindowProc: TWndMethod;
+    procedure NewEditWindowProc(var Message: TMessage);
+
   public
 
     { Public declarations }
@@ -43,11 +46,10 @@ type
 
 var
   MainForm: TMainForm;
-  RegEx: TRegExpr;
 
 implementation
 
-uses DScintillaTypes, Winapi.RichEdit;
+uses Winapi.RichEdit;
 
 {$R *.dfm}
 
@@ -69,23 +71,6 @@ begin
         end;
       TMPBtnType.btStop: Timer.Enabled := False;
     end;
-
-end;
-
-procedure TMainForm.SongTextEditorChange(Sender: TObject);
-var CurPos, i: Integer;
-    NewChar: Char;
-begin
-//  CurPos:= SongTextEditor.SelStart;
-//  NewChar:= SongTextEditor.Text[CurPos];
-//
-//  if NewChar = '[' then
-//  begin
-//
-//    i:= Pos(']', SongTextEditor.Text, CurPos);
-//
-//  end;
-
 
 end;
 
@@ -136,33 +121,28 @@ var Res: Boolean;
 begin
   //SetWindowLong(Button2.Handle, GWL_STYLE, GetWindowLong(Button2.Handle, GWL_STYLE) OR BS_MULTILINE);
 
-  SongTextEditor.SelectAll;
-  SongTextEditor.SelAttributes.BGColor := clWindow;
-
-  RegEx.ModifierM := True;
-  RegEx.ModifierI := True;
-  RegEx.ModifierG := True;
-
-  RegEx.Expression := '^(\[\d+:\d+:\d+\])';
-
-  Text := SongTextEditor.Text;
-  Text := StringReplace(Text, #13, '', [rfReplaceAll, rfIgnoreCase]);
-
-  RegEx.InputString := Text;
-
-  if RegEx.Exec then
-  repeat
-    SongTextEditor.SelStart := RegEx.MatchPos[1] - 1;
-    SongTextEditor.SelLength := RegEx.MatchLen[1];
-    SongTextEditor.SelAttributes.BGColor := clGreen;
-  until not RegEx.ExecNext;
-
  // SongTextEditor.SelAttributes.BGColor := clRed;
+end;
+
+procedure TMainForm.NewEditWindowProc(var Message: TMessage);
+begin
+
+  // перехватываем сообщение о вставке
+  if Message.Msg = WM_PASTE then
+    SongTextEditor.Text := 'Вставка!!!'
+  else
+    OldWindowProc(Message);
+
 end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 var FileName: string;
 begin
+  // Запоминаем старую оконную процедуру
+  OldWindowProc := SongTextEditor.WindowProc;
+  // Заменяем ее новой
+  SongTextEditor.WindowProc := NewEditWindowProc;
+
 
   FileName:= 'wave-16.wav';
 
@@ -171,7 +151,6 @@ begin
 
   MediaPlayer.Open;
 
-  RegEx := TRegExpr.Create;
 end;
 
 end.
