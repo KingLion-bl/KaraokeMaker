@@ -5,7 +5,7 @@ interface
 uses
   System.SysUtils, System.Classes, Vcl.Controls, Vcl.ExtCtrls, Vcl.MPlayer, MyType,
   Vcl.StdCtrls, WinAPI.Messages, System.Types, Vcl.Graphics, Vcl.Forms, WavData, PaintWave,
-  WaveScrollBar;
+  WaveScrollBar, SongTextGrid;
 
 const
   imNearest = 0;
@@ -22,6 +22,7 @@ type
   private
     FPaintBox: TWSPaintBox;
     FScrollBar: TWSScrollBar;
+    FSongTextGrid: TSongTextGrid;
 
     FWaveScreenSelectPosition: TWaveScreenSelectPosition;
 
@@ -46,11 +47,11 @@ type
     procedure WaveScreenMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 
     // Установка и чтение текущей позиции "волны": сэмплы от начала файла
-    procedure SetWavePositionBySamples(APosition: Integer);
+    procedure SetWavePositionBySamples(ASamplesPosition: Integer);
     function GetWavePositionAsSamples: Integer;
 
     // Установка и чтение текущей позиции курсора: секунды от начала файла
-    procedure SetCursorPositionByTime(APosition: Extended);
+    procedure SetCursorPositionByTime(ATimePosition: Extended);
     function GetCursorPositionAsTime: Extended;
 
     // Установка и чтение текущей позиции курсора: сэмплы от начала файла
@@ -96,7 +97,7 @@ type
     // Устанавливает интервал сэмлпов, для отображения на экране
     procedure SetVisibleInterval(FirstSample, LastSample: Integer);
     // Интервал сэмплов, отображаемый на экране
-    property Interval: TInterval read FVisibleInterval;
+    property VisibleInterval: TInterval read FVisibleInterval;
     // Получает количество сэмплов, видимых на экране
     function GetVisibleSamplesCount: Integer;
 
@@ -104,6 +105,11 @@ type
     function SampleByX(ACoordinate: Integer): Integer;
     // Конвертация экранной координаты во время от начала файла
     function TimeByX(ACoordinate: Integer): Extended;
+
+    // Получить сэпм по времени
+    function GetSampleByTime(Time: Extended): Integer;
+    // Получить время по сэмплу
+    function GetTimeBySample(Sample: Integer): Extended;
 
     // Текущее положение отображения "волны" в сэмплах от начала файла
     property WavePositionAsSamples: Integer read GetWavePositionAsSamples write SetWavePositionBySamples;
@@ -124,6 +130,7 @@ type
   published
     property PaintBox: TWSPaintBox read FPaintBox;
     property ScrollBar: TWSScrollBar read FScrollBar;
+    property SongTextGrid: TSongTextGrid read FSongTextGrid write FSongTextGrid;
 
     // автопрокрутка вместе с курсором
     property AutoScroll: Boolean read FAutoScroll write SetAutoScroll default True;
@@ -181,7 +188,6 @@ begin
   inherited;
 end;
 
-
 function TWaveScreen.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean;
 var NewIntervalSize: Integer;
   Deviation: Integer;
@@ -216,8 +222,6 @@ begin
   Result := True;
 end;
 
-
-
 function TWaveScreen.GetVisibleSamplesCount: Integer;
 begin
   Result := FVisibleInterval.Max - FVisibleInterval.Min + 1;
@@ -236,6 +240,16 @@ begin
   Result := SampleByX(ACoordinate) / FWavData.Head.dwSamplesPerSec;
 end;
 
+function TWaveScreen.GetSampleByTime(Time: Extended): Integer;
+begin
+  Result := Trunc(Time * FWavData.Head.dwSamplesPerSec);
+end;
+
+function TWaveScreen.GetTimeBySample(Sample: Integer): Extended;
+begin
+  Result := Sample / FWavData.Head.dwSamplesPerSec;
+end;
+
 procedure TWaveScreen.Resize;
 begin
   inherited;
@@ -247,9 +261,9 @@ begin
   Repaint;
 end;
 
-procedure TWaveScreen.SetWavePositionBySamples(APosition: Integer);
+procedure TWaveScreen.SetWavePositionBySamples(ASamplesPosition: Integer);
 begin
-  FScrollBar.Position := APosition;
+  FScrollBar.Position := ASamplesPosition;
 end;
 
 function TWaveScreen.GetWavePositionAsSamples: Integer;
@@ -257,16 +271,16 @@ begin
   Result := FScrollBar.Position;
 end;
 
-procedure TWaveScreen.SetCursorPositionByTime(APosition: Extended);
+procedure TWaveScreen.SetCursorPositionByTime(ATimePosition: Extended);
 var NewPosition: Integer;
 begin
-  NewPosition := Trunc(APosition * FWavData.Head.dwSamplesPerSec);
+  NewPosition := GetSampleByTime(ATimePosition);
   SetCursorPositionBySamples(NewPosition);
 end;
 
 function TWaveScreen.GetCursorPositionAsTime: Extended;
 begin
-  Result := FCursorPosition / FWavData.Head.dwSamplesPerSec;
+  Result := GetTimeBySample(FCursorPosition);
 end;
 
 procedure TWaveScreen.SetCursorPositionBySamples(APosition: Integer);
@@ -440,6 +454,10 @@ var
   WavData: TWavData;
   Coeff: Real;
   LinePos: Integer;
+
+  curTimePoint: Extended;
+  curSample: integer;
+
 begin
   inherited;
 
@@ -458,14 +476,18 @@ begin
 
     with ScrBitmap.Canvas do
     begin
+      // Очистка поля для вывода
       Brush.Color := clBlack;
       FillRect(ClientRect);
+
+      // Рисуем ось
       DrawAxis;
 
-      NewLength := Length(FDisplayedData.Max);
-
+      // Верхняя и нижняя части графа
       Pen.Color := clLime;
       F := Height * YScale / 65536;
+
+      NewLength := Length(FDisplayedData.Max);
 
       For i := 0 to NewLength - 1 do
       begin
@@ -479,12 +501,34 @@ begin
         LineTo(i, Height shr 1 + round(FDisplayedData.Max[i] * F) + 1);
       end;
 
+      // Линия текущего курсора
       Coeff := Width / ScrollBar.PageSize;
-      LinePos := Trunc((CursorPositionAsSamples - Interval.Min) * Coeff);
+      LinePos := Trunc((CursorPositionAsSamples - VisibleInterval.Min) * Coeff);
       Pen.Color := clAqua;
 
       MoveTo(LinePos, 1);
       LineTo(LinePos, Height);
+
+      // Отображаем временные метки
+      Pen.Color := clHotLight;
+      Brush.Color := clCream;
+
+      if Assigned(SongTextGrid) then
+      begin
+        for i := 1 to SongTextGrid.TimePointsCount do
+        begin
+          curTimePoint := SongTextGrid.TimePoints[i];
+          curSample := GetSampleByTime(curTimePoint);
+
+          if (curSample >= VisibleInterval.Min) And (curSample <= VisibleInterval.Max) then
+          begin
+            LinePos := Trunc((curSample - VisibleInterval.Min) * Coeff);
+            MoveTo(LinePos, Height Div 2);
+            Ellipse(LinePos - 5, Height Div 2 - 15, LinePos + 5, Height Div 2 + 15);
+          end;
+        end;
+      end;
+
     end;
 
     Canvas.Draw(0, 0, ScrBitmap);

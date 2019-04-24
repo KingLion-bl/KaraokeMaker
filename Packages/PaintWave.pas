@@ -6,8 +6,6 @@ uses Vcl.Controls, Vcl.Graphics, System.Classes, WavData, MyType;
 
 type
 
-
-
   TWSPaintBox = class(TGraphicControl)
   public
     ScrBitmap: TBitmap;

@@ -1,15 +1,12 @@
 ﻿[Panel1]
 Coordinates=10,10,55,58
 
-[WaveScreen]
-Coordinates=10,78,88,58
-
 [Timer]
 Coordinates=25,77,47,36
 Visible=True
 
 []
-Coordinates=251,155,86,36
+Coordinates=10,78,88,58
 Visible=True
 
 [AutoScroll]

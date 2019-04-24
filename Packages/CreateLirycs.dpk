@@ -39,6 +39,7 @@ contains
   PaintWave in 'PaintWave.pas',
   WaveScrollBar in 'WaveScrollBar.pas',
   SongTextEditor in 'SongTextEditor.pas',
-  RegExpr in 'RegExpr.pas';
+  RegExpr in 'RegExpr.pas',
+  SongTextGrid in 'SongTextGrid.pas';
 
 end.

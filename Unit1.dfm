@@ -89,9 +89,6 @@ object MainForm: TMainForm
           ParentDoubleBuffered = False
           TabOrder = 0
           OnClick = MediaPlayerClick
-          ExplicitTop = 3
-          ExplicitWidth = 57
-          ExplicitHeight = 69
         end
       end
     end
@@ -116,9 +113,9 @@ object MainForm: TMainForm
       ScrollBar.Width = 846
       ScrollBar.Height = 23
       ScrollBar.Align = alClient
-      ScrollBar.PageSize = 28
-      ScrollBar.Position = 15
+      ScrollBar.PageSize = 1
       ScrollBar.TabOrder = 0
+      SongTextGrid = SongTextTable
       AutoScroll = False
       OnSelectPosition = WaveScreenSelectPosition
     end
@@ -131,7 +128,7 @@ object MainForm: TMainForm
     Align = alClient
     Caption = 'Panel2'
     TabOrder = 1
-    object SongTextTable: TStringGrid
+    object SongTextTable: TSongTextGrid
       Left = 1
       Top = 1
       Width = 850
@@ -143,20 +140,13 @@ object MainForm: TMainForm
       Font.Height = -16
       Font.Name = 'MS Sans Serif'
       Font.Style = []
-      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goEditing]
+      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goEditing]
       ParentFont = False
       TabOrder = 0
-      OnDrawCell = SongTextTableDrawCell
-      OnGetEditMask = SongTextTableGetEditMask
+      ExplicitLeft = 0
       ColWidths = (
-        103
-        721)
-      RowHeights = (
-        24
-        24
-        24
-        24
-        24)
+        100
+        730)
     end
   end
   object Timer: TTimer

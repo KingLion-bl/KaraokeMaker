@@ -5,22 +5,22 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ExtCtrls, Vcl.MPlayer, Vcl.ComCtrls, WaveScreen, Vcl.StdCtrls,
-  Vcl.Grids, Vcl.ValEdit, SongTextEditor;
+  Vcl.Grids, Vcl.ValEdit, SongTextGrid;
 
 type
 
   TMainForm = class(TForm)
     Panel1: TPanel;
-    WaveScreen: TWaveScreen;
     Timer: TTimer;
     AutoScroll: TCheckBox;
     Button1: TButton;
     Panel3: TPanel;
     Splitter1: TSplitter;
     Panel2: TPanel;
-    SongTextTable: TStringGrid;
     Panel4: TPanel;
     MediaPlayer: TMediaPlayer;
+    WaveScreen: TWaveScreen;
+    SongTextTable: TSongTextGrid;
 
 
     procedure FormResize(Sender: TObject);
@@ -30,10 +30,6 @@ type
     procedure TimerTimer(Sender: TObject);
     procedure AutoScrollClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
-    procedure SongTextTableGetEditMask(Sender: TObject; ACol, ARow: Integer;
-      var Value: string);
-    procedure SongTextTableDrawCell(Sender: TObject; ACol, ARow: Integer;
-      Rect: TRect; State: TGridDrawState);
     procedure WaveScreenSelectPosition(Sender: TObject;
       Time: Extended);
 
@@ -77,39 +73,6 @@ begin
 
 end;
 
-procedure TMainForm.SongTextTableDrawCell(Sender: TObject; ACol, ARow: Integer;
-  Rect: TRect; State: TGridDrawState);
-var
-  curText: string;
-  curTextWidth: Integer;
-  curTextHeight: Integer;
-begin
-
-  if (ACol = 0) and (ARow <> 0) then
-    with SongTextTable.Canvas do
-      begin
-        Brush.Color := clAqua;
-        Rectangle(Rect);
-
-        curText := SongTextTable.Cells[ACol, ARow];
-
-        curTextWidth := TextWidth(curText);
-        curTextHeight := TextHeight(curText);
-
-        TextOut(Rect.Left + (Rect.Width - curTextWidth) div 2,
-                Rect.Top +  (Rect.Height - curTextHeight) div 2,
-                curText);
-      end;
-
-end;
-
-procedure TMainForm.SongTextTableGetEditMask(Sender: TObject; ACol, ARow: Integer;
-  var Value: string);
-begin
-  if ACol = 0 then
-    Value := '00.00.00';
-end;
-
 procedure TMainForm.TimerTimer(Sender: TObject);
 begin
   WaveScreen.CursorPositionAsTime := MediaPlayer.Position / 1000;
@@ -144,15 +107,7 @@ begin
 
 
   curRow := SongTextTable.Row;
-
-  TimeAsInt := Trunc(Time);
-  Hours :=  TimeAsInt div 60 div 60;
-  Minutes := TimeAsInt div 60 mod 60;
-  Seconds := TimeAsInt mod 60;
-
-  SongTextTable.Cells[0, curRow] := Format('%.2d', [Hours]) + '.' +
-                                    Format('%.2d', [Minutes]) + '.' +
-                                    Format('%.2d', [Seconds]);
+  SongTextTable.TimePoints[curRow] := Time;
 
 end;
 
