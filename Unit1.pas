@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ExtCtrls, Vcl.MPlayer, Vcl.ComCtrls, WaveScreen, Vcl.StdCtrls,
-  Vcl.Grids, Vcl.ValEdit, SongTextGrid;
+  Vcl.Grids, Vcl.ValEdit, SongTextGrid, System.Actions, Vcl.ActnList, Vcl.Menus;
 
 type
 
@@ -21,6 +21,13 @@ type
     MediaPlayer: TMediaPlayer;
     WaveScreen: TWaveScreen;
     SongTextTable: TSongTextGrid;
+    MainMenu1: TMainMenu;
+    N1: TMenuItem;
+    N2: TMenuItem;
+    N3: TMenuItem;
+    ActionList1: TActionList;
+    SaveProjectAction: TAction;
+    OpenProjectAction: TAction;
 
 
     procedure FormResize(Sender: TObject);

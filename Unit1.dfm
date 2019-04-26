@@ -11,6 +11,7 @@ object MainForm: TMainForm
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
+  Menu = MainMenu1
   OldCreateOrder = False
   OnCreate = FormCreate
   OnResize = FormResize
@@ -143,7 +144,6 @@ object MainForm: TMainForm
       Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goEditing]
       ParentFont = False
       TabOrder = 0
-      ExplicitLeft = 0
       ColWidths = (
         100
         730)
@@ -155,5 +155,28 @@ object MainForm: TMainForm
     OnTimer = TimerTimer
     Left = 16
     Top = 24
+  end
+  object MainMenu1: TMainMenu
+    Left = 16
+    Top = 165
+    object N1: TMenuItem
+      Caption = #1060#1072#1081#1083
+      object N3: TMenuItem
+        Action = OpenProjectAction
+      end
+      object N2: TMenuItem
+        Action = SaveProjectAction
+      end
+    end
+  end
+  object ActionList1: TActionList
+    Left = 17
+    Top = 209
+    object OpenProjectAction: TAction
+      Caption = #1054#1090#1082#1088#1099#1090#1100' '#1087#1088#1086#1077#1082#1090
+    end
+    object SaveProjectAction: TAction
+      Caption = '&'#1057#1086#1093#1088#1072#1085#1080#1090#1100' '#1087#1088#1086#1077#1082#1090
+    end
   end
 end
